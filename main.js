@@ -315,7 +315,7 @@
 /* ------------------------------------------------------------------
    CTA form → Supabase
    ------------------------------------------------------------------ */
-var SUPABASE_URL = "https://svghsrxsprfusxnpjrwe.supabase.co/rest/v1/";
+var SUPABASE_URL = "https://svghsrxsprfusxnpjrwe.supabase.co/";
 var SUPABASE_ANON_KEY = "sb_publishable_e25BZhkKPz2tLI0JgsmtbQ_y_zQglhI";
 var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

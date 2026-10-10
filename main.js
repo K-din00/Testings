@@ -312,20 +312,61 @@
     statEls.forEach(animateCount);
   }
 
-  /* ------------------------------------------------------------------
-     CTA form (demo only — no backend)
-     ------------------------------------------------------------------ */
-  var ctaForm = document.getElementById("ctaForm");
-  var ctaNote = document.getElementById("ctaNote");
-  var ctaEmail = document.getElementById("ctaEmail");
+/* ------------------------------------------------------------------
+   CTA form → Supabase
+   ------------------------------------------------------------------ */
+var SUPABASE_URL = "https://svghsrxsprfusxnpjrwe.supabase.co/rest/v1/";
+var SUPABASE_ANON_KEY = "sb_publishable_e25BZhkKPz2tLI0JgsmtbQ_y_zQglhI";
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  if (ctaForm) {
-    ctaForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      if (ctaEmail && ctaEmail.value) {
-        ctaNote.textContent = "You're on the list — check " + ctaEmail.value + " for a confirmation.";
+var ctaForm = document.getElementById("ctaForm");
+var ctaNote = document.getElementById("ctaNote");
+var ctaEmail = document.getElementById("ctaEmail");
+
+if (ctaForm) {
+  ctaForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (!ctaEmail || !ctaEmail.value) return;
+
+    var submitBtn = ctaForm.querySelector('[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    ctaNote.textContent = "Saving…";
+
+    // Every named field in the form (checkboxes, selects, etc. included)
+    var fields = Object.fromEntries(new FormData(ctaForm).entries());
+    var email = (fields.email || ctaEmail.value).trim().toLowerCase();
+    delete fields.email;
+
+    var row = {
+      email: email,
+      fields: fields, // any extra inputs end up here as jsonb
+      meta: {
+        page_url: location.href,
+        referrer: document.referrer || null,
+        language: navigator.language,
+        user_agent: navigator.userAgent,
+        submitted_at: new Date().toISOString()
+      }
+    };
+
+    try {
+      var result = await sb.from("signups").insert(row);
+      if (result.error) {
+        if (result.error.code === "23505") {
+          ctaNote.textContent = "You're already on the list — thanks!";
+        } else {
+          throw result.error;
+        }
+      } else {
+        ctaNote.textContent = "You're on the list — check " + email + " for a confirmation.";
         ctaForm.reset();
       }
-    });
-  }
+    } catch (err) {
+      console.error(err);
+      ctaNote.textContent = "Something went wrong. Please try again.";
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+}
 })();

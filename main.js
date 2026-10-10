@@ -322,11 +322,21 @@ var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var ctaForm = document.getElementById("ctaForm");
 var ctaNote = document.getElementById("ctaNote");
 var ctaEmail = document.getElementById("ctaEmail");
+// Requires: text before @, a domain, a dot, and a TLD of 2+ letters
+// (also allows punycode TLDs like xn--p1ai)
+var EMAIL_RE = /^[^\s@]+@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+([a-z]{2,}|xn--[a-z0-9-]{2,})$/i;
 
 if (ctaForm) {
   ctaForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     if (!ctaEmail || !ctaEmail.value) return;
+
+var emailValue = ctaEmail.value.trim();
+if (!EMAIL_RE.test(emailValue)) {
+  ctaNote.textContent = "Please enter a valid email address, like name@example.com.";
+  ctaEmail.focus();
+  return;
+};
 
     var submitBtn = ctaForm.querySelector('[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;

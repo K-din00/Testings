@@ -215,7 +215,9 @@
       <h2>Your next lap is data.</h2>
       <p>Free for your first ten sessions. No credit card, no install wizard — a five minute setup.</p>
       <form class="cta-form" id="ctaForm">
-        <input type="email" placeholder="you@paddock.com" required aria-label="Email address" id="ctaEmail">
+        <input type="email" placeholder="you@paddock.com" required aria-label="Email address" id="ctaEmail" 
+          pattern="[^\s@]+@([A-Za-z0-9]([A-Za-z0-9\-]*[A-Za-z0-9])?\.)+([A-Za-z]{2,}|xn--[A-Za-z0-9\-]{2,})"
+         title="Enter a valid email, e.g. name@example.com">
         <button type="submit" class="btn btn-primary">Get early access</button>
       </form>
       <p class="cta-note" id="ctaNote" aria-live="polite"></p>

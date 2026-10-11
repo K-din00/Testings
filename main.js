@@ -315,9 +315,6 @@
 /* ------------------------------------------------------------------
    CTA form → Supabase
    ------------------------------------------------------------------ */
-var SUPABASE_URL = "https://svghsrxsprfusxnpjrwe.supabase.co/";
-var SUPABASE_ANON_KEY = "sb_publishable_e25BZhkKPz2tLI0JgsmtbQ_y_zQglhI";
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 var ctaForm = document.getElementById("ctaForm");
 var ctaNote = document.getElementById("ctaNote");
@@ -360,7 +357,13 @@ if (!EMAIL_RE.test(emailValue)) {
     };
 
     try {
-      var result = await sb.from("signups").insert(row);
+      var resp = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(row)
+      });
+      // Map our API's status codes onto the existing error handling below
+      var result = { error: resp.ok ? null : { code: resp.status === 409 ? "23505" : "http_" + resp.status } };
       if (result.error) {
         if (result.error.code === "23505") {
           ctaNote.textContent = "You're already on the list — thanks!";

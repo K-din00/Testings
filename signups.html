@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" class="auth-checking">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signups — Apex Internal</title>
+<meta name="description" content="Restricted Apex signup data viewer.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="main.css">
+</head>
+<body class="internal-page signups-page">
+
+<div class="grain"></div>
+
+<header class="internal-bar">
+  <div class="internal-bar-inner">
+    <a href="internal.html" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      APEX
+    </a>
+    <span class="internal-tag mono">Internal</span>
+    <div class="internal-user">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="internal-user-name mono" id="sessionUser">admin</span>
+      <a href="/signups" class="internal-nav-btn is-active" aria-current="page">Signups</a>
+      <a href="internal.html" class="internal-link">Console</a>
+      <a href="index.html" class="internal-link">View site</a>
+      <button type="button" class="internal-logout" id="logoutBtn">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<main class="internal-main signups-main">
+  <div class="internal-hero">
+    <div>
+      <p class="eyebrow">Internal data</p>
+      <h1>Signups</h1>
+      <p class="internal-sub">Every column from the public early-access signup table, newest first.</p>
+    </div>
+    <div class="signups-toolbar">
+      <span class="internal-status">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="signupsMeta" aria-live="polite">Loading…</span>
+      </span>
+      <button type="button" class="internal-logout" id="refreshSignups">Refresh</button>
+    </div>
+  </div>
+
+  <p class="form-error signups-error" id="signupsError" role="alert" aria-live="polite"></p>
+
+  <div class="signups-table-wrap">
+    <table class="signups-table" id="signupsTable" aria-label="Early access signups">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <p class="signups-foot">Showing the latest 1,000 rows. JSON columns are displayed in full.</p>
+</main>
+
+<footer class="internal-footer">
+  <div class="internal-footer-inner">
+    <span>APEX internal console</span>
+    <span>Do not share this page or your credentials.</span>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+</body>
+</html>

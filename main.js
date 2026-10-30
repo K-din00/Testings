@@ -313,27 +313,184 @@
   }
 
 /* ------------------------------------------------------------------
-   CTA form → Supabase
+   CTA form → early access account modal
    ------------------------------------------------------------------ */
 
 var ctaForm = document.getElementById("ctaForm");
 var ctaNote = document.getElementById("ctaNote");
 var ctaEmail = document.getElementById("ctaEmail");
+var accessModal = document.getElementById("accessModal");
+var accessForm = document.getElementById("accessForm");
+var accessEmail = document.getElementById("accessEmail");
+var accessPassword = document.getElementById("accessPassword");
+var accessError = document.getElementById("accessError");
+var accessSubmit = document.getElementById("accessSubmit");
+var accessTitle = document.getElementById("accessTitle");
+var accessSub = document.getElementById("accessSub");
+var accessClose = document.getElementById("accessClose");
+var accessPwToggle = document.getElementById("accessPwToggle");
+var accessOpener = null;
+
 // Requires: text before @, a domain, a dot, and a TLD of 2+ letters
 // (also allows punycode TLDs like xn--p1ai)
 var EMAIL_RE = /^[^\s@]+@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+([a-z]{2,}|xn--[a-z0-9-]{2,})$/i;
+
+function setAccessError(message) {
+  if (accessError) accessError.textContent = message;
+}
+
+function openAccessModal(email, hasAccount) {
+  if (!accessModal) return;
+
+  accessOpener = document.activeElement;
+
+  if (accessEmail) accessEmail.value = email;
+  if (accessPassword) {
+    accessPassword.value = "";
+    accessPassword.type = "password";
+    accessPassword.autocomplete = hasAccount ? "current-password" : "new-password";
+  }
+  if (accessPwToggle) {
+    accessPwToggle.textContent = "Show";
+    accessPwToggle.setAttribute("aria-pressed", "false");
+  }
+  if (accessTitle) {
+    accessTitle.textContent = hasAccount ? "Sign in to early access" : "Set your password";
+  }
+  if (accessSub) {
+    accessSub.textContent = hasAccount
+      ? "Enter the password for " + email + " to open your early-access page."
+      : "Create a password for " + email + ". You'll use it to open your early-access page.";
+  }
+  if (accessSubmit) {
+    accessSubmit.disabled = false;
+    accessSubmit.textContent = "Continue";
+  }
+  setAccessError("");
+
+  if (typeof accessModal.showModal === "function") {
+    if (!accessModal.open) accessModal.showModal();
+  } else {
+    accessModal.setAttribute("open", "");
+  }
+
+  window.setTimeout(function () {
+    if (accessPassword) accessPassword.focus();
+  }, 30);
+}
+
+function closeAccessModal() {
+  if (!accessModal) return;
+
+  if (typeof accessModal.close === "function" && accessModal.open) {
+    accessModal.close();
+  } else {
+    accessModal.removeAttribute("open");
+  }
+
+  if (accessPassword) accessPassword.value = "";
+  setAccessError("");
+  if (accessOpener && typeof accessOpener.focus === "function") accessOpener.focus();
+}
+
+if (accessClose) accessClose.addEventListener("click", closeAccessModal);
+
+if (accessModal) {
+  accessModal.addEventListener("click", function (event) {
+    if (event.target === accessModal) closeAccessModal();
+  });
+
+  accessModal.addEventListener("close", function () {
+    if (accessPassword) accessPassword.value = "";
+  });
+}
+
+if (accessPwToggle && accessPassword) {
+  accessPwToggle.addEventListener("click", function () {
+    var show = accessPassword.type === "password";
+    accessPassword.type = show ? "text" : "password";
+    accessPwToggle.textContent = show ? "Hide" : "Show";
+    accessPwToggle.setAttribute("aria-pressed", show ? "true" : "false");
+    accessPassword.focus();
+  });
+}
+
+if (accessForm) {
+  accessForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (accessSubmit && accessSubmit.disabled) return;
+
+    var email = accessEmail ? accessEmail.value.trim().toLowerCase() : "";
+    var password = accessPassword ? accessPassword.value : "";
+
+    setAccessError("");
+
+    if (!email || !password) {
+      setAccessError("Enter your password.");
+      if (accessPassword) accessPassword.focus();
+      return;
+    }
+
+    if (accessSubmit) {
+      accessSubmit.disabled = true;
+      accessSubmit.textContent = "Signing in…";
+    }
+
+    try {
+      var response = await fetch("/api/account/access", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password })
+      });
+
+      if (response.ok) {
+        window.location.assign("account.html");
+        return;
+      }
+
+      if (response.status === 401) {
+        if (accessTitle) accessTitle.textContent = "Sign in to early access";
+        if (accessSub) {
+          accessSub.textContent =
+            "Enter the password for " + email + " to open your early-access page.";
+        }
+        if (accessPassword) {
+          accessPassword.autocomplete = "current-password";
+          accessPassword.value = "";
+          accessPassword.focus();
+        }
+        setAccessError("Incorrect password. Try again.");
+      } else if (response.status === 404) {
+        setAccessError("This email is not on the early-access list.");
+      } else if (response.status === 400) {
+        setAccessError("Enter a valid email and password.");
+      } else {
+        setAccessError("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      setAccessError("Unable to reach the server. Please try again.");
+    } finally {
+      if (accessSubmit) {
+        accessSubmit.disabled = false;
+        accessSubmit.textContent = "Continue";
+      }
+    }
+  });
+}
 
 if (ctaForm) {
   ctaForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     if (!ctaEmail || !ctaEmail.value) return;
 
-var emailValue = ctaEmail.value.trim();
-if (!EMAIL_RE.test(emailValue)) {
-  ctaNote.textContent = "Please enter a valid email address, like name@example.com.";
-  ctaEmail.focus();
-  return;
-};
+    var emailValue = ctaEmail.value.trim();
+    if (!EMAIL_RE.test(emailValue)) {
+      ctaNote.textContent = "Please enter a valid email address, like name@example.com.";
+      ctaEmail.focus();
+      return;
+    }
 
     var submitBtn = ctaForm.querySelector('[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
@@ -359,20 +516,28 @@ if (!EMAIL_RE.test(emailValue)) {
     try {
       var resp = await fetch("/api/signup", {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(row)
       });
-      // Map our API's status codes onto the existing error handling below
-      var result = { error: resp.ok ? null : { code: resp.status === 409 ? "23505" : "http_" + resp.status } };
-      if (result.error) {
-        if (result.error.code === "23505") {
-          ctaNote.textContent = "You're already on the list — thanks!";
-        } else {
-          throw result.error;
-        }
+
+      var data = null;
+      try {
+        data = await resp.json();
+      } catch (err) {
+        // Keep the status-code fallback below.
+      }
+
+      if (resp.ok || resp.status === 409) {
+        var hasAccount = !!(data && data.has_account);
+        ctaNote.textContent = hasAccount
+          ? "You're already on the list. Sign in to your early-access page."
+          : "You're on the list. Set a password to open your early-access page.";
+        openAccessModal(email, hasAccount);
+      } else if (resp.status === 400) {
+        ctaNote.textContent = "Please enter a valid email address, like name@example.com.";
       } else {
-        ctaNote.textContent = "You're on the list — check " + email + " for a confirmation.";
-        ctaForm.reset();
+        throw new Error("signup failed");
       }
     } catch (err) {
       console.error(err);

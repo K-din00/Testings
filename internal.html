@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" class="auth-checking">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internal Console — Apex</title>
+<meta name="description" content="Restricted Apex internal operations console.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="main.css">
+</head>
+<body class="internal-page">
+
+<div class="grain"></div>
+
+<header class="internal-bar">
+  <div class="internal-bar-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      APEX
+    </a>
+    <span class="internal-tag mono">Internal</span>
+    <div class="internal-user">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="internal-user-name mono" id="sessionUser">admin</span>
+      <a href="/signups" class="internal-nav-btn">Signups</a>
+      <a href="index.html" class="internal-link">View site</a>
+      <button type="button" class="internal-logout" id="logoutBtn">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<main class="internal-main">
+  <div class="internal-hero">
+    <div>
+      <p class="eyebrow">Operations console</p>
+      <h1>Internal workspace</h1>
+      <p class="internal-sub">Signed in as <strong id="heroUser">admin</strong>. This area is restricted to Apex staff.</p>
+    </div>
+    <div class="internal-status">
+      <span class="status-dot" aria-hidden="true"></span>
+      Authenticated
+    </div>
+  </div>
+
+  <div class="internal-grid">
+    <section class="panel" aria-labelledby="sessionHeading">
+      <div class="panel-head">
+        <h2 id="sessionHeading">Session</h2>
+        <span class="panel-tag mono">Active</span>
+      </div>
+      <dl class="session-list">
+        <div><dt>User</dt><dd class="mono" id="sessionUserDetail">admin</dd></div>
+        <div><dt>Role</dt><dd id="sessionRole">Administrator</dd></div>
+        <div><dt>Signed in</dt><dd id="sessionStarted">—</dd></div>
+        <div><dt>Expires</dt><dd id="sessionExpires">—</dd></div>
+        <div><dt>Session ID</dt><dd class="mono" id="sessionToken">—</dd></div>
+      </dl>
+      <p class="session-note" id="sessionCountdown">Checking session…</p>
+    </section>
+
+    <section class="panel" aria-labelledby="linksHeading">
+      <div class="panel-head">
+        <h2 id="linksHeading">Quick links</h2>
+      </div>
+      <nav class="quick-links" aria-label="Internal quick links">
+        <a href="/signups"><span>Signups</span><span aria-hidden="true">→</span></a>
+        <a href="index.html"><span>Public site</span><span aria-hidden="true">↗</span></a>
+        <a href="index.html#telemetry"><span>Telemetry demo</span><span aria-hidden="true">↗</span></a>
+        <a href="index.html#cta"><span>Signup form</span><span aria-hidden="true">↗</span></a>
+        <a href="index.html#features"><span>Feature overview</span><span aria-hidden="true">↗</span></a>
+      </nav>
+    </section>
+
+    <section class="panel panel-wide" aria-labelledby="envHeading">
+      <div class="panel-head">
+        <h2 id="envHeading">Environment</h2>
+        <span class="panel-tag mono">Demo build</span>
+      </div>
+      <div class="env-grid">
+        <div class="env-item">
+          <span class="env-label">Signup endpoint</span>
+          <span class="env-value mono">POST /api/signup</span>
+        </div>
+        <div class="env-item">
+          <span class="env-label">Site build</span>
+          <span class="env-value mono">Static site</span>
+        </div>
+        <div class="env-item">
+          <span class="env-label">Access</span>
+          <span class="env-value">Admin only</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="internal-footer">
+  <div class="internal-footer-inner">
+    <span>APEX internal console</span>
+    <span>Do not share this page or your credentials.</span>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+</body>
+</html>

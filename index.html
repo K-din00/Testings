@@ -237,10 +237,40 @@
       <a href="#flow">Sessions</a>
       <a href="#features">Features</a>
       <a href="#stats">Numbers</a>
+      <a href="login.html" class="footer-internal">Staff login</a>
     </div>
     <p class="footer-copy">Demo build — for evaluation purposes only.</p>
   </div>
 </footer>
+
+<dialog class="access-modal" id="accessModal" aria-labelledby="accessTitle">
+  <form class="access-modal-inner" id="accessForm" novalidate>
+    <button type="button" class="modal-close" id="accessClose" aria-label="Close">×</button>
+    <p class="eyebrow">Early access</p>
+    <h2 id="accessTitle">Set your password</h2>
+    <p class="access-sub" id="accessSub">Create a password for your early-access page.</p>
+
+    <div class="field">
+      <label for="accessEmail">Email</label>
+      <input type="email" id="accessEmail" name="email" readonly>
+    </div>
+
+    <div class="field">
+      <div class="field-label-row">
+        <label for="accessPassword">Password</label>
+        <button type="button" class="pw-toggle" id="accessPwToggle" aria-pressed="false">Show</button>
+      </div>
+      <div class="password-wrap">
+        <input type="password" id="accessPassword" name="password" autocomplete="current-password" required>
+      </div>
+    </div>
+
+    <p class="form-error" id="accessError" role="alert" aria-live="polite"></p>
+
+    <button type="submit" class="btn btn-primary login-submit" id="accessSubmit">Continue</button>
+    <p class="access-foot">Your password is stored as a secure hash. Sessions expire after 15 minutes of inactivity.</p>
+  </form>
+</dialog>
 
 <script src="main.js"></script>
 </body>

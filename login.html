@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internal Login — Apex</title>
+<meta name="description" content="Restricted access to the Apex internal operations console.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="main.css">
+</head>
+<body class="auth-page">
+
+<div class="grain"></div>
+
+<header class="nav auth-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      APEX
+    </a>
+    <span class="internal-tag mono">Internal</span>
+  </div>
+</header>
+
+<main class="auth-main">
+  <section class="login-card" aria-labelledby="loginTitle">
+    <div class="login-head">
+      <p class="eyebrow">Restricted access</p>
+      <h1 id="loginTitle">Internal login</h1>
+      <p>Sign in to the Apex operations console.</p>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <noscript><p class="noscript-note">JavaScript is required to sign in.</p></noscript>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          autofocus
+          required>
+      </div>
+
+      <div class="field">
+        <div class="field-label-row">
+          <label for="password">Password</label>
+          <button type="button" class="pw-toggle" id="pwToggle" aria-pressed="false">Show</button>
+        </div>
+        <div class="password-wrap">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            required>
+        </div>
+      </div>
+
+      <p class="form-error" id="loginError" role="alert" aria-live="polite"></p>
+
+      <button type="submit" class="btn btn-primary login-submit" id="loginSubmit">Sign in</button>
+    </form>
+
+    <div class="login-foot">
+      <span class="login-secure"><span class="status-dot" aria-hidden="true"></span>Authorized personnel only</span>
+      <a href="index.html">← Back to site</a>
+    </div>
+  </section>
+</main>
+
+<script src="auth.js"></script>
+</body>
+</html>

@@ -402,8 +402,9 @@ function openAccessModal(email, hasAccount) {
     accessPassword.autocomplete = hasAccount ? "current-password" : "new-password";
   }
   if (accessPwToggle) {
-    accessPwToggle.textContent = "Show";
     accessPwToggle.setAttribute("aria-pressed", "false");
+    accessPwToggle.setAttribute("aria-label", "Show password");
+    accessPwToggle.setAttribute("title", "Show password");
   }
   if (accessTitle) {
     accessTitle.textContent = hasAccount
@@ -461,8 +462,9 @@ if (accessPwToggle && accessPassword) {
   accessPwToggle.addEventListener("click", function () {
     var show = accessPassword.type === "password";
     accessPassword.type = show ? "text" : "password";
-    accessPwToggle.textContent = show ? "Hide" : "Show";
     accessPwToggle.setAttribute("aria-pressed", show ? "true" : "false");
+    accessPwToggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    accessPwToggle.setAttribute("title", show ? "Hide password" : "Show password");
     accessPassword.focus();
   });
 }

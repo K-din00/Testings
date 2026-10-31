@@ -1088,18 +1088,6 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   margin-bottom: 8px;
 }
 
-.field-label-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.field-label-row label {
-  margin-bottom: 0;
-}
-
 .field input {
   width: 100%;
   background: var(--bg-alt);
@@ -1141,7 +1129,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 
 .password-wrap input {
-  padding-right: 76px;
+  padding-right: 48px;
 }
 
 .pw-toggle {
@@ -1149,21 +1137,48 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   top: 50%;
   right: 6px;
   transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   background: transparent;
   border: none;
+  border-radius: 8px;
   color: var(--text-faint);
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 6px;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
-.pw-toggle:hover {
+.pw-toggle:hover,
+.pw-toggle:focus-visible {
   color: var(--amber);
+  background: rgba(255, 184, 0, 0.08);
+  outline: none;
+}
+
+.pw-icon {
+  display: block;
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pw-icon-eye {
+  display: none;
+}
+
+.pw-toggle[aria-pressed="true"] .pw-icon-eye {
+  display: block;
+}
+
+.pw-toggle[aria-pressed="true"] .pw-icon-eye-off {
+  display: none;
 }
 
 .form-error {

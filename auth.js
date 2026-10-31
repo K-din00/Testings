@@ -72,8 +72,9 @@
       pwToggle.addEventListener("click", function () {
         var show = passwordInput.type === "password";
         passwordInput.type = show ? "text" : "password";
-        pwToggle.textContent = show ? "Hide" : "Show";
         pwToggle.setAttribute("aria-pressed", show ? "true" : "false");
+        pwToggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+        pwToggle.setAttribute("title", show ? "Hide password" : "Show password");
         passwordInput.focus();
       });
     }

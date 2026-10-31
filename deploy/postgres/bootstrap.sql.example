@@ -1,0 +1,27 @@
+-- Bootstrap the application roles and database.
+--
+-- Copy this file to bootstrap.sql, replace both CHANGE_ME values with strong
+-- passwords, then run it once as the PostgreSQL superuser:
+--
+--   docker exec -i postgres-db-1 \
+--     psql -U postgres -d postgres < bootstrap.sql
+--
+-- The script is safe to re-run: it creates missing roles/database and updates
+-- the role passwords. It does not change the owner of an existing database.
+
+SELECT format('CREATE ROLE myapp_user LOGIN PASSWORD %L', 'CHANGE_ME_OWNER')
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'myapp_user') \gexec
+
+SELECT format('CREATE ROLE signup_api LOGIN PASSWORD %L', 'CHANGE_ME_API')
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'signup_api') \gexec
+
+ALTER ROLE myapp_user WITH LOGIN PASSWORD 'CHANGE_ME_OWNER';
+ALTER ROLE signup_api WITH LOGIN PASSWORD 'CHANGE_ME_API';
+
+SELECT 'CREATE DATABASE myapp OWNER myapp_user'
+WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'myapp') \gexec
+
+\connect myapp
+
+GRANT CONNECT ON DATABASE myapp TO signup_api;
+GRANT USAGE ON SCHEMA public TO signup_api;

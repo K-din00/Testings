@@ -1,0 +1,29 @@
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${SITE_ROOT:-/opt/website}:/srv:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  api:
+    build: ../api
+    restart: unless-stopped
+    env_file: ../api/.env
+    networks:
+      - default
+      - db
+
+networks:
+  db:
+    name: postgres_database
+    external: true
+
+volumes:
+  caddy_data:
+  caddy_config:

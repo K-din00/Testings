@@ -1,0 +1,21 @@
+# Local secrets — never commit real credentials
+.env
+.env.*
+!**/.env.example
+
+# TLS keys and certificates
+*.pem
+*.key
+
+# Database backups and dumps
+*.sql.gz
+deploy/postgres/backups/
+
+# Node dependencies and logs
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

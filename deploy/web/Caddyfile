@@ -1,0 +1,46 @@
+racist.abrdns.com {
+	handle /.git* {
+		respond 404
+	}
+
+	handle /api/* {
+		reverse_proxy api:3000
+	}
+
+	# Gate the internal console at the edge; the API checks the HttpOnly session cookie.
+	@internalConsole path /internal.html
+	handle @internalConsole {
+		forward_auth api:3000 {
+			uri /api/auth/verify
+		}
+		root * /srv
+		file_server
+	}
+
+	# The signups viewer is an internal page served at the extensionless /signups path.
+	@signupsPage path /signups /signups.html
+	handle @signupsPage {
+		forward_auth api:3000 {
+			uri /api/auth/verify
+		}
+		rewrite * /signups.html
+		root * /srv
+		file_server
+	}
+
+	# Public early-access account page, gated by its own 15-minute session.
+	@accountPage path /account /account.html
+	handle @accountPage {
+		forward_auth api:3000 {
+			uri /api/account/verify
+		}
+		rewrite * /account.html
+		root * /srv
+		file_server
+	}
+
+	handle {
+		root * /srv
+		file_server
+	}
+}

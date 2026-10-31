@@ -4,6 +4,57 @@
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ------------------------------------------------------------------
+     Cinematic page intro (once per session, skippable)
+     ------------------------------------------------------------------ */
+  var apexIntro = document.getElementById("apexIntro");
+
+  if (apexIntro) {
+    var introSeen = false;
+    try {
+      introSeen = sessionStorage.getItem("apexIntroSeen") === "1";
+    } catch (err) {
+      // Private mode may block storage; still show the intro.
+    }
+
+    if (reducedMotion || introSeen) {
+      apexIntro.remove();
+    } else {
+      try {
+        sessionStorage.setItem("apexIntroSeen", "1");
+      } catch (err) {
+        // Ignore storage failures.
+      }
+
+      document.body.classList.add("intro-active");
+
+      var introFinished = false;
+      var introTimer = window.setTimeout(finishIntro, 1900);
+
+      function finishIntro() {
+        if (introFinished) return;
+        introFinished = true;
+        window.clearTimeout(introTimer);
+        apexIntro.classList.add("done");
+        document.body.classList.remove("intro-active");
+        window.setTimeout(function () {
+          if (apexIntro.parentNode) apexIntro.remove();
+        }, 1200);
+      }
+
+      apexIntro.addEventListener("click", finishIntro);
+      window.addEventListener(
+        "keydown",
+        function (event) {
+          if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {
+            finishIntro();
+          }
+        },
+        { once: true }
+      );
+    }
+  }
+
+  /* ------------------------------------------------------------------
      Nav: scrolled state + mobile toggle
      ------------------------------------------------------------------ */
   var nav = document.getElementById("nav");
@@ -355,12 +406,13 @@ function openAccessModal(email, hasAccount) {
     accessPwToggle.setAttribute("aria-pressed", "false");
   }
   if (accessTitle) {
-    accessTitle.textContent = hasAccount ? "Sign in to early access" : "Set your password";
+    accessTitle.textContent = hasAccount
+      ? "Sign in to Apex."
+      : "Create a password for " + email + ".";
   }
   if (accessSub) {
-    accessSub.textContent = hasAccount
-      ? "Enter the password for " + email + " to open your early-access page."
-      : "Create a password for " + email + ". You'll use it to open your early-access page.";
+    accessSub.textContent =
+      "You'll use your email and password combination to login to Apex.";
   }
   if (accessSubmit) {
     accessSubmit.disabled = false;
@@ -451,10 +503,10 @@ if (accessForm) {
       }
 
       if (response.status === 401) {
-        if (accessTitle) accessTitle.textContent = "Sign in to early access";
+        if (accessTitle) accessTitle.textContent = "Sign in to Apex.";
         if (accessSub) {
           accessSub.textContent =
-            "Enter the password for " + email + " to open your early-access page.";
+            "You'll use your email and password combination to login to Apex.";
         }
         if (accessPassword) {
           accessPassword.autocomplete = "current-password";
